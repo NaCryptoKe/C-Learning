@@ -1,0 +1,17 @@
+.vscode/
+# Ignore all Windows executables
+*.exe
+
+# Ignore common C++ build artifacts
+*.obj
+*.o
+*.out
+*.log
+*.dll
+*.pdb
+
+# Ignore build directories
+/build/
+/bin/
+/debug/
+/release/
