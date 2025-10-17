@@ -1,16 +1,11 @@
 #include <iostream>
 #include <memory>
+#include <vector>
 
 using namespace std;
 
 int main() {
-    unique_ptr<int> x (new int(34));
-    unique_ptr<int> y = make_unique<int>(45);
-
-
-    shared_ptr<int> z = make_shared<int>(56);
-
-    weak_ptr<int> a = z;
+    cout << __cplusplus << endl;
 
     return 0;
 }
