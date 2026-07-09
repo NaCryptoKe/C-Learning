@@ -21,7 +21,7 @@ bool is_empty(ring_buffer *R);
 
 void *producer(void *arg) {
     ring_buffer *R = (ring_buffer *)arg;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 10; i++) {
         int *val = malloc(sizeof(int));
         *val = i;
         push(R, val);
@@ -32,13 +32,13 @@ void *producer(void *arg) {
 void *consumer(void *arg) {
     ring_buffer *R = (ring_buffer *)arg;
     int count = 0;
-    while (count < 6) {
+    while (count < 9) {
         void *val = pop(R);
         if (val != NULL) {
             printf("%d\n", *(int *)val);
             free(val);
             count++;
-        } else break;
+        } else continue;
     }
     return NULL;
 }
@@ -51,8 +51,8 @@ int main(void) {
     pthread_t t1, t2;
 
     pthread_create(&t1, NULL, producer, &R);
-    pthread_join(t1, NULL);
     pthread_create(&t2, NULL, consumer, &R);
+    pthread_join(t1, NULL);
     pthread_join(t2, NULL);
 
     free(R.buffer);
@@ -84,14 +84,14 @@ void *pop(ring_buffer *R) {
 
 bool is_full(ring_buffer *R) {
     size_t start = atomic_load_explicit(&R->start, memory_order_acquire);
-    size_t end = atomic_load_explicit(&R->end, memory_order_relaxed);
+    size_t end = atomic_load_explicit(&R->end, memory_order_acquire);
     assert(end - start <= MAX_SIZE);
     return (end - start) == MAX_SIZE;
 }
 
 bool is_empty(ring_buffer *R) {
     size_t end = atomic_load_explicit(&R->end, memory_order_acquire);
-    size_t start = atomic_load_explicit(&R->start, memory_order_relaxed);
+    size_t start = atomic_load_explicit(&R->start, memory_order_acquire);
     assert(end >= start);
     return (end - start) == 0;
 }
